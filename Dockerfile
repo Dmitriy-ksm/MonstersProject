@@ -1,0 +1,6 @@
+FROM node:18-alpine
+WORKDIR /app
+ENV WDS_SOCKET_PORT=3000
+COPY . .
+RUN npm i
+ENTRYPOINT ["npm"]

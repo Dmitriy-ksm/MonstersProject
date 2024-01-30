@@ -1,50 +1,39 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 
 import SeachBox from './components/search-box/search-box.component';
 import CardList from './components/card-list/card-list.component';
 
 import './App.css';
 
-class App extends Component{
-  constructor() {
-    super();
+const App = () => {
+  const [monsters, setMonsters] = useState([]);
+  const [searchField, setSearchField] = useState('');
 
-    this.state = {
-      monsters: [],
-      searchField: '',
-    };
-  }
+  const [filteredMonster, setFilteredMonsters] = useState(monsters);
 
-  onSearchChange = (event) => this.setState({searchField:event.target.value.toLowerCase()});
-
-  componentDidMount() {
+  useEffect(()=>{
     fetch('https://jsonplaceholder.typicode.com/users')
       .then(response =>  response.json())
-      .then(users => this.setState(() => {
-        return {monsters: users}
-      }))
-  }
+      .then(users => setMonsters(users))
+  }, []);
 
+  useEffect(()=>{
+    setFilteredMonsters(monsters.filter((m=>m.name.toLowerCase().includes(searchField))))
+  }, [monsters, searchField]);
 
-  render() {
-    
-    const { monsters, searchField } = this.state;
-    const { onSearchChange } = this;
+  const onSearchChange = event => setSearchField(event.target.value.toLowerCase());
 
-    const filteredMonsters = monsters.filter((m=>m.name.toLowerCase().includes(searchField)))
-    
-    return (
-      <div className="App">
-        <h1 className='app-title'>Monsters Rolodex</h1>
-        <SeachBox 
-          className="monster-search-box"
-          placeholder="search monster"
-          onSearchChange={onSearchChange} 
-        />
-        <CardList monsters={filteredMonsters} />
-      </div>
-    );
-  }
+  return (
+    <div className="App">
+      <h1 className='app-title'>Monsters Rolodex</h1>
+      <SeachBox 
+        className="monster-search-box"
+        placeholder="Search monster"
+        onSearchChange={onSearchChange} 
+      />
+      <CardList monsters={filteredMonster} />
+    </div>
+  )
 }
 
 export default App;

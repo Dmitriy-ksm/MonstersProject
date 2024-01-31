@@ -1,6 +1,7 @@
 FROM node:18-alpine
 WORKDIR /app
 ENV WDS_SOCKET_PORT=3000
+ENV WATCHPACK_POLLING=true
 COPY . .
 RUN npm i
 ENTRYPOINT ["npm"]
